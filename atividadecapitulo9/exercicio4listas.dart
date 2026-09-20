@@ -1,62 +1,98 @@
+// Classe que representa um iterador para percorrer uma lista.
+class MeuIterador<T> implements Iterator<T> {
+  // Lista que será percorrida.
+  final List<T> lista;
+
+  // Guarda a posição atual do iterador.
+  int _indice = -1;
+
+  // Guarda o elemento atual.
+  late T _atual;
+
+  // Indica se existe um elemento atual.
+  bool _possuiAtual = false;
+
+  // Construtor que recebe a lista.
+  MeuIterador(this.lista);
+
+  // Retorna o elemento atual.
+  @override
+  T get current {
+    if (!_possuiAtual) {
+      throw StateError('Não existe elemento atual.');
+    }
+
+    return _atual;
+  }
+
+  // Avança para o próximo elemento.
+  @override
+  bool moveNext() {
+    // Verifica se existe um próximo elemento.
+    if (_indice + 1 >= lista.length) {
+      return false;
+    }
+
+    // Avança uma posição.
+    _indice++;
+
+    // Atualiza o elemento atual.
+    _atual = lista[_indice];
+
+    // Informa que existe um elemento atual.
+    _possuiAtual = true;
+
+    return true;
+  }
+
+  // Volta para o elemento anterior.
+  bool movePrevious() {
+    // Verifica se existe um elemento anterior.
+    if (_indice - 1 < 0) {
+      return false;
+    }
+
+    // Volta uma posição.
+    _indice--;
+
+    // Atualiza o elemento atual.
+    _atual = lista[_indice];
+
+    // Mantém o elemento atual válido.
+    _possuiAtual = true;
+
+    return true;
+  }
+}
+
+// Função principal do programa.
 void main() {
-  // Cria uma lista de números inteiros.
+  // Cria uma lista de números.
   final lista = [10, 20, 30, 40, 50];
 
-  // Cria uma lista contendo nomes de linguagens de programação.
-  final palavras = ['dart', 'java', 'python', 'kotlin'];
+  // Cria o iterador.
+  final iterador = MeuIterador<int>(lista);
 
-  // contains verifica se o elemento 30 existe na lista.
-  print('contains(30): ${lista.contains(30)}');
+  // Percorre a lista utilizando moveNext().
+  print('Percorrendo com moveNext():');
 
-  // elementAt acessa um elemento pelo índice.
-  // O índice 2 corresponde ao terceiro elemento da lista.
-  print('elementAt(2): ${lista.elementAt(2)}');
+  while (iterador.moveNext()) {
+    print(iterador.current);
+  }
 
-  // firstWhere procura o primeiro elemento
-  // que seja maior que 25.
-  print('firstWhere(> 25): ${lista.firstWhere((e) => e > 25)}');
+  // Cria outro iterador para demonstrar o percurso inverso.
+  final iteradorInverso = MeuIterador<int>(lista);
 
-  // lastWhere procura o último elemento
-  // que seja menor que 45.
-  print('lastWhere(< 45): ${lista.lastWhere((e) => e < 45)}');
+  // Avança até o último elemento.
+  while (iteradorInverso.moveNext()) {}
 
-  // expand cria novos elementos a partir de cada elemento.
-  // Neste caso, adiciona o número e o seu dobro.
-  final expandido = lista.expand((e) => [e, e * 2]);
+  // Mostra o último elemento.
+  print('\nPercorrendo de trás para frente com movePrevious():');
+  print(iteradorInverso.current);
 
-  // Converte o resultado para uma lista e exibe.
-  print('expand: ${expandido.toList()}');
-
-  // take pega os primeiros 3 elementos da lista.
-  print('take(3): ${lista.take(3).toList()}');
-
-  // skip ignora os dois primeiros elementos
-  // e retorna os elementos restantes.
-  print('skip(2): ${lista.skip(2).toList()}');
-
-  // reduce combina todos os elementos da lista.
-  // Aqui, os valores são somados.
-  final soma = lista.reduce((a, b) => a + b);
-
-  // Exibe o resultado da soma.
-  print('reduce (soma): $soma');
-
-  // fold funciona de forma semelhante ao reduce,
-  // mas permite definir um valor inicial.
-  // Neste caso, a soma começa em 100.
-  final somaComInicial = lista.fold(100, (a, b) => a + b);
-
-  // Exibe o resultado da soma mais o valor inicial.
-  print('fold (soma + 100): $somaComInicial');
-
-  // join transforma os elementos da lista em uma única string,
-  // utilizando vírgula e espaço como separadores.
-  print('join: ${palavras.join(', ')}');
-
-  // every verifica se todos os elementos atendem à condição.
-  // Aqui verifica se todos são maiores que 5.
-  print('every(> 5): ${lista.every((e) => e > 5)}');
-
-  // Verifica se todos os elementos são maiores que 20.
-  print('every(> 20): ${lista.every((e) => e > 20)}');
+  // Volta pelos elementos anteriores.
+  while (iteradorInverso.movePrevious()) {
+    print(iteradorInverso.current);
+  }
 }
+  
