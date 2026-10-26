@@ -103,7 +103,9 @@ void main() {
     setUp(() {
       professor = Professor('Carlos');
       professor.id = 10;
+
       disciplina = Disciplina('Flutter');
+
       historico = Historico(disciplina, professor, 2023);
     });
 
@@ -117,6 +119,7 @@ void main() {
     test('Matricular aluno e calcular média sem notas', () {
       final aluno = Aluno('Maria', 2023);
       aluno.id = 1;
+
       historico.matricular(aluno);
 
       expect(historico.media(aluno), 0.0);
@@ -126,6 +129,7 @@ void main() {
     test('Calcular média das notas do aluno', () {
       final aluno = Aluno('Maria', 2023);
       aluno.id = 1;
+
       historico.matricular(aluno);
       historico.notas[aluno] = [8.0, 10.0];
 
@@ -136,10 +140,33 @@ void main() {
     test('Aluno com média 6 não está aprovado', () {
       final aluno = Aluno('Paula', 2023);
       aluno.id = 2;
+
       historico.matricular(aluno);
       historico.notas[aluno] = [5.0, 7.0];
 
       expect(historico.media(aluno), 6.0);
+      expect(historico.isAprovado(aluno), false);
+    });
+
+    test('Aluno com média superior a 6 está aprovado', () {
+      final aluno = Aluno('Maria', 2023);
+      aluno.id = 1;
+
+      historico.matricular(aluno);
+      historico.notas[aluno] = [8.0, 10.0];
+
+      expect(historico.media(aluno), 9.0);
+      expect(historico.isAprovado(aluno), true);
+    });
+
+    test('Aluno com média inferior a 6 não está aprovado', () {
+      final aluno = Aluno('João', 2023);
+      aluno.id = 3;
+
+      historico.matricular(aluno);
+      historico.notas[aluno] = [4.0, 6.0];
+
+      expect(historico.media(aluno), 5.0);
       expect(historico.isAprovado(aluno), false);
     });
 
